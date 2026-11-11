@@ -1,0 +1,28 @@
+BOLA NA REDE — GNEWS API
+
+REQUISITOS
+- Node.js 18 ou superior
+- Uma chave GNews: https://gnews.io/
+
+COMO CONFIGURAR
+1. Extraia esta pasta e abra-a no VS Code.
+2. Abra o terminal do VS Code dentro da pasta BolaNaRedeProjeto.
+3. Execute: npm install
+4. Crie um arquivo chamado .env (na mesma pasta de server.js).
+5. Copie o conteúdo de .env.example para .env.
+6. Troque COLE_SUA_CHAVE_AQUI pela sua chave da GNews.
+7. Execute: npm start
+8. Abra http://localhost:3000 no navegador.
+
+COMO FUNCIONA
+- A aba Notícias consulta a GNews pelo time favorito escolhido.
+- O botão Atualizar Notícias faz uma nova consulta.
+- O feed tenta atualizar automaticamente a cada 30 minutos.
+- O servidor mantém cache por 10 minutos para economizar requisições.
+- A chave fica somente no arquivo .env do servidor; nunca a coloque no script.js.
+
+PLANO GRATUITO GNEWS
+- 100 requisições por dia; até 10 artigos por chamada.
+- As notícias têm atraso de 12 horas no plano gratuito.
+- O plano gratuito é para desenvolvimento/testes e uso não comercial.
+- Para notícias disponibilizadas em tempo real e uso em produção, consulte os planos pagos da GNews.
