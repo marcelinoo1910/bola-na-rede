@@ -1,0 +1,36 @@
+BOLA NA REDE - VERSÃO PREPARADA PARA VERCEL
+
+ESTRUTURA
+- server.js: aplicação Express / endpoint /api/news
+- package.json: dependências do servidor
+- public/index.html: página inicial
+- public/style.css e public/script.js: estilos e funcionalidades
+- public/assets/: imagens do projeto
+
+PUBLICAR NA VERCEL
+1. Envie o CONTEÚDO desta pasta BolaNaRedeProjeto para o repositório Git conectado à Vercel.
+   Na raiz do repositório devem ficar server.js, package.json e a pasta public.
+2. Se o repositório tiver esta pasta BolaNaRedeProjeto dentro de outra pasta, configure
+   Project Settings > Build and Deployment > Root Directory como BolaNaRedeProjeto.
+3. Para este projeto Express, não configure comando de build nem Output Directory manualmente.
+   A detecção de Express da Vercel deve cuidar da Function.
+4. Em Project Settings > Environment Variables, adicione:
+   Name: GNEWS_API_KEY
+   Value: sua chave privada da GNews
+   Marque Production (e Preview se desejar) e salve.
+5. Faça um novo Deploy (Redeploy) depois de salvar a variável.
+6. Abra https://SEU-DOMINIO.vercel.app/ . A página inicial fica na raiz.
+
+IMPORTANTE
+- Não coloque a chave GNews no script.js, no HTML ou no GitHub.
+- Não envie o arquivo .env para o repositório.
+- A rota de notícias é /api/news?team=Flamengo, por exemplo.
+- O plano gratuito da GNews pode ter atraso na disponibilidade das notícias.
+
+EXECUTAR LOCALMENTE
+1. Crie um arquivo .env ao lado de server.js com:
+   GNEWS_API_KEY=sua_chave
+   PORT=3000
+2. No terminal, execute npm install (no PowerShell do Windows, pode usar npm.cmd install).
+3. Execute npm start (ou npm.cmd start).
+4. Acesse http://localhost:3000 .

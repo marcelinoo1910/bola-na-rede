@@ -1,4 +1,5 @@
-// Backend seguro do Bola na Rede: mantém a chave GNews fora do navegador.
+// Bola na Rede - servidor compatível com Vercel e execução local.
+// A chave da GNews deve ser configurada em GNEWS_API_KEY (variável de ambiente).
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -8,18 +9,25 @@ const PORT = Number(process.env.PORT || 3000);
 const API_KEY = process.env.GNEWS_API_KEY;
 const cache = new Map();
 const CACHE_TTL_MS = 10 * 60 * 1000;
+const PUBLIC_DIR = path.join(__dirname, 'public');
 
-app.use(express.static(path.join(__dirname)));
+// Página inicial: os arquivos estáticos (CSS, JS e imagens) ficam em /public
+// e são servidos pela CDN da Vercel.
+app.get('/', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
+});
 
 app.get('/api/news', async (req, res) => {
   if (!API_KEY) {
     return res.status(503).json({
-      error: 'A chave da GNews ainda não foi configurada. Crie o arquivo .env a partir de .env.example e informe GNEWS_API_KEY.'
+      error: 'A chave da GNews ainda não foi configurada. Adicione GNEWS_API_KEY nas variáveis de ambiente da Vercel.'
     });
   }
 
   const team = String(req.query.team || 'futebol').trim().slice(0, 80);
-  const query = team.toLowerCase() === 'futebol' ? 'futebol OR soccer' : `"${team}" AND (futebol OR futebolista OR soccer)`;
+  const query = team.toLowerCase() === 'futebol'
+    ? 'futebol OR soccer'
+    : `"${team}" AND (futebol OR futebolista OR soccer)`;
   const cacheKey = query.toLowerCase();
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.savedAt < CACHE_TTL_MS) {
@@ -41,7 +49,7 @@ app.get('/api/news', async (req, res) => {
       const message = apiResponse.status === 403
         ? 'A GNews recusou a consulta. Confira o limite diário e o plano da sua chave.'
         : apiResponse.status === 401
-          ? 'Chave GNews inválida. Confira o valor de GNEWS_API_KEY no arquivo .env.'
+          ? 'Chave GNews inválida. Confira GNEWS_API_KEY nas variáveis de ambiente.'
           : `A GNews retornou um erro (${apiResponse.status}).`;
       return res.status(apiResponse.status === 429 ? 429 : 502).json({ error: message });
     }
@@ -63,6 +71,12 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Bola na Rede disponível em http://localhost:${PORT}`);
-});
+// Exportar o app permite que a Vercel o execute como Function.
+module.exports = app;
+
+// No computador local, `npm start` continua iniciando o servidor normalmente.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Bola na Rede disponível em http://localhost:${PORT}`);
+  });
+}
